@@ -289,7 +289,6 @@ validar_negativos(_ds_energia)
 ### las columnas del ds clima al ds energía además de completar datos de estas
 ### columnas 
 
-_ds_energia_pos = _ds_energia
 _ds_energia_tomerge = _ds_energia
 
 log('Se convierten todos los valores en positivos')
@@ -323,7 +322,7 @@ _ds_clima_tomerge['windspeed'] = _ds_clima_tomerge['windspeed'].mask(abs((_ds_cl
 
 log('Se ordenan por fecha los datasets')
 # ordeno por fecha los ds
-_ds_energia_tomerge = _ds_energia_pos.sort_values(by='fecha').reset_index()
+_ds_energia_tomerge = _ds_energia_tomerge.sort_values(by='fecha').reset_index()
 _ds_clima_tomerge = _ds_clima_tomerge.sort_values(by='fecha').reset_index()
 _ds_energia_tomerge.drop(columns=['index'], inplace=True)
 _ds_clima_tomerge.drop(columns=['index'], inplace=True)
@@ -372,7 +371,7 @@ def guardar_dataset(ds, prefix):
     logs_filepath = os.path.join(dir, filename + '.log')
     zip_filepath = os.path.join(dir, filename + '.zip')
     
-    ds.to_csv(ds_filepath, index = False, header=True, encoding='utf-8')
+    ds.to_csv(ds_filepath, index = False, header=True, encoding='utf-8', float_format='%.2f')
     df_logs.to_csv(logs_filepath, index = False, header=False, encoding='utf-8')
 
     create_zip(zip_filepath, ds_filepath, logs_filepath)
