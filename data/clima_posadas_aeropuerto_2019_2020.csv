@@ -1,5 +1,5 @@
-time,temp,dewpoint,humidity,precipitation,snow,winddirection,windspeed,peakgust,pressure,tsunshine,wheathercode
-2019-01-01,00,31.2,25.3,71,,,90,13.0,,1007.6,,ccc
+time,temperature,dewpoint,humidity,precipitation,snow,winddirection,windspeed,peakgust,pressure,tsunshine,wheathercode
+2019-01-01,00,31.2,25.3,71,,,90,13.0,,1007.6,,
 2019-01-01,01,31.0,24.9,70,,,90,9.4,,1008.0,,
 2019-01-01,02,29.0,23.0,70,,,90,9.4,,1009.0,,
 2019-01-01,03,29.2,23.2,70,,,90,3.6,,1007.4,,
