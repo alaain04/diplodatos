@@ -203,7 +203,7 @@ def log_metadata(texto):
         'texto': texto
     })
 
-_ds_energia = pd.read_csv('https://raw.githubusercontent.com/alaain04/diplodatos/master/data/distribucion.csv')
+_ds_energia = pd.read_csv('https://raw.githubusercontent.com/alaain04/diplodatos/master/data/energia_completo.csv',sep=';')
 
 log_metadata('Dataset leído correctamente en utf-8')
 
@@ -221,9 +221,8 @@ _ds_energia = _ds_energia.sort_index()
 log_metadata('Generamos Period Index para dataset de Energía y ordenamos.')
 
 # _ds_clima
-_ds_clima = pd.read_csv('https://github.com/alaain04/diplodatos/raw/master/data/clima.csv',
-                        parse_dates=['time'],
-                        date_parser=dateparse)
+_ds_clima = pd.read_csv('https://raw.githubusercontent.com/alaain04/diplodatos/master/data/clima_posadas_20192020.csv')
+_ds_clima['time'] = pd.to_datetime(_ds_clima['time'],format='%Y-%m-%d %H:%M:%S')
 
 #Elegimos features del dataset de Clima y los llevamos cada 5 minutos para poder unirlo con el dataset de energia
 _ds_clima.index = pd.PeriodIndex(list(_ds_clima['time']), freq='T')
@@ -235,17 +234,17 @@ log_metadata('Generamos Period Index para dataset de Clima y ordenamos valores')
 
 """#####Unimos ambos datasets"""
 
-_ds_energia=_ds_energia.join(_ds_clima)
+_ds_energia=_ds_energia.join(_ds_clima,how='left')
 
 log_metadata('Unimos ambos datasets')
 
 """#####Creamos campos para ayudar en los cálculos"""
 
 #Calculamos los valores absolutos de la Potencia
-_ds_energia['abs_Kwatts'] = _ds_energia['Kwatts 3 fases'].abs()
+_ds_energia['abs_Kwatts'] = _ds_energia['Kwatts_3_fases'].abs()
 
 #Calculamos los valores absolutos de la Potencia
-_ds_energia['abs_Potencia'] = _ds_energia['Factor de Poten-A'].abs()
+_ds_energia['abs_Potencia'] = _ds_energia['Factor_de_Poten_A'].abs()
 
 #Creamos un campo con la fecha del día solamente
 _ds_energia['fecha_dia'] = pd.to_datetime(_ds_energia['Fecha'].dt.date)
@@ -342,27 +341,27 @@ Este es el paso más analítico, en donde se deben aplicar reglas de integridad.
 """
 
 #Verificar si existen valores negativos
-print('Cant. negativos Amper fase T-A: ' + str(_ds_energia[_ds_energia['Amper fase T-A'] < 0].shape[0] ))
-print('Cant. negativos Amper fase S-A: ' +  str(_ds_energia[_ds_energia['Amper fase S-A'] < 0].shape[0] ))
-print('Cant. negativos Amper fase R-A: ' +  str(_ds_energia[_ds_energia['Amper fase R-A'] < 0].shape[0] ))
+print('Cant. negativos Amper fase T-A: ' + str(_ds_energia[_ds_energia['Amper_fase_T_A'] < 0].shape[0] ))
+print('Cant. negativos Amper fase S-A: ' +  str(_ds_energia[_ds_energia['Amper_fase_S_A'] < 0].shape[0] ))
+print('Cant. negativos Amper fase R-A: ' +  str(_ds_energia[_ds_energia['Amper_fase_R_A'] < 0].shape[0] ))
 
 print('Cant. negativos Vab: ' +  str(_ds_energia[_ds_energia['Vab'] < 0].shape[0] ))
 print('Cant. negativos Vca: ' +  str(_ds_energia[_ds_energia['Vca'] < 0].shape[0] ))
 print('Cant. negativos Vbc: ' +  str(_ds_energia[_ds_energia['Vbc'] < 0].shape[0] ))
 
-print('Cant. negativos Kwatts 3 fases: ' +  str(_ds_energia[_ds_energia['Kwatts 3 fases'] < 0].shape[0] ))
-print('Cant. negativos Factor de Poten-A: ' +  str(_ds_energia[_ds_energia['Factor de Poten-A'] < 0].shape[0] ))
+print('Cant. negativos Kwatts 3 fases: ' +  str(_ds_energia[_ds_energia['Kwatts_3_fases'] < 0].shape[0] ))
+print('Cant. negativos Factor de Poten-A: ' +  str(_ds_energia[_ds_energia['Factor_de_Poten_A'] < 0].shape[0] ))
 
-log_metadata('Cant. negativos Amper fase T-A: ' + str(_ds_energia[_ds_energia['Amper fase T-A'] < 0].shape[0] ))
-log_metadata('Cant. negativos Amper fase S-A: ' +  str(_ds_energia[_ds_energia['Amper fase S-A'] < 0].shape[0] ))
-log_metadata('Cant. negativos Amper fase R-A: ' +  str(_ds_energia[_ds_energia['Amper fase R-A'] < 0].shape[0] ))
+log_metadata('Cant. negativos Amper fase T-A: ' + str(_ds_energia[_ds_energia['Amper_fase_T_A'] < 0].shape[0] ))
+log_metadata('Cant. negativos Amper fase S-A: ' +  str(_ds_energia[_ds_energia['Amper_fase_S_A'] < 0].shape[0] ))
+log_metadata('Cant. negativos Amper fase R-A: ' +  str(_ds_energia[_ds_energia['Amper_fase_R_A'] < 0].shape[0] ))
 
 log_metadata('Cant. negativos Vab: ' +  str(_ds_energia[_ds_energia['Vab'] < 0].shape[0] ))
 log_metadata('Cant. negativos Vca: ' +  str(_ds_energia[_ds_energia['Vca'] < 0].shape[0] ))
 log_metadata('Cant. negativos Vbc: ' +  str(_ds_energia[_ds_energia['Vbc'] < 0].shape[0] ))
 
-log_metadata('Cant. negativos Kwatts 3 fases: ' +  str(_ds_energia[_ds_energia['Kwatts 3 fases'] < 0].shape[0] ))
-log_metadata('Cant. negativos Factor de Poten-A: ' +  str(_ds_energia[_ds_energia['Factor de Poten-A'] < 0].shape[0] ))
+log_metadata('Cant. negativos Kwatts 3 fases: ' +  str(_ds_energia[_ds_energia['Kwatts_3_fases'] < 0].shape[0] ))
+log_metadata('Cant. negativos Factor de Poten-A: ' +  str(_ds_energia[_ds_energia['Factor_de_Poten_A'] < 0].shape[0] ))
 
 """Control de registros duplicados en fecha_hora"""
 
@@ -408,15 +407,15 @@ _ds_energia[ _ds_energia['Vca'].isna()] = 0
 _ds_energia[ _ds_energia['Vbc'].isna()] = 0
 
 # convertimos los nan de abs_Kwatts en valor 0 si es nan 'Kwatts 3 fases' y 'Amper fase T-A'== 0, luego se marcará como un corte de energia
-_ds_energia.loc[ ( _ds_energia['Amper fase R-A'].isna()) & (_ds_energia['Amper fase T-A'] == 0), 'Amper fase R-A'] = 0
-_ds_energia.loc[ ( _ds_energia['Amper fase S-A'].isna()) & (_ds_energia['Amper fase T-A'] == 0), 'Amper fase S-A'] = 0
-_ds_energia.loc[ ( _ds_energia['Kwatts 3 fases'].isna()) & (_ds_energia['Amper fase T-A'] == 0), 'abs_Kwatts'] = 0
+_ds_energia.loc[ ( _ds_energia['Amper_fase_R_A'].isna()) & (_ds_energia['Amper_fase_T_A'] == 0), 'Amper_fase_R_A'] = 0
+_ds_energia.loc[ ( _ds_energia['Amper_fase_S_A'].isna()) & (_ds_energia['Amper_fase_T_A'] == 0), 'Amper_fase_S_A'] = 0
+_ds_energia.loc[ ( _ds_energia['Kwatts_3_fases'].isna()) & (_ds_energia['Amper_fase_T_A'] == 0), 'abs_Kwatts'] = 0
 
 #Evaluamos si hubo un corte de energia (o sea, si la potencia total es igual a 0)
 _ds_energia.loc[_ds_energia.abs_Kwatts == 0, 'corte_energia'] = 1
-_ds_energia.loc[(_ds_energia['Factor de Poten-A']<=0) & (_ds_energia['Kwatts 3 fases']>0),
+_ds_energia.loc[(_ds_energia['Factor_de_Poten_A']<=0) & (_ds_energia['Kwatts_3_fases']>0),
                                                'corte_energia'] = 1
-_ds_energia.loc[(_ds_energia['Factor de Poten-A']>0) & (_ds_energia['Kwatts 3 fases']<0),
+_ds_energia.loc[(_ds_energia['Factor_de_Poten_A']>0) & (_ds_energia['Kwatts_3_fases']<0),
                                                'corte_energia'] = 1                                               
 
 _ds_energia.loc[_ds_energia.abs_Kwatts != 0, 'corte_energia'] = 0
@@ -430,6 +429,11 @@ _ds_energia.loc[_ds_energia.abs_Kwatts <= _valor_outlier, 'outlier_Kwatts'] = 0
 
 #Decidimos reemplazar los valores outliers de Potencia por 0 ya que consideramos que fue un error de medición y que para poder graficar los datos, necesitamos que no estén.
 _ds_energia.loc[_ds_energia['outlier_Kwatts']==1, 'abs_Kwatts'] = 0
+
+_ds_energia.winddirection.fillna(value=0,inplace=True)
+_ds_energia.windspeed.fillna(value=0,inplace=True)
+
+print('La Cantidad de Nan en Potencia es: '+str(len(_ds_energia[_ds_energia.abs_Kwatts.isna()].abs_Kwatts)) + ", con un impacto de un " + str(len(_ds_energia[_ds_energia.abs_Kwatts.isna()].abs_Kwatts)/len(_ds_energia.abs_Kwatts)*100) +"%.")
 
 log_metadata('Calculamos Nan luego de reemplazarl')
 log_metadata('La Cantidad de Nan en Potencia es: '+str(len(_ds_energia[_ds_energia.abs_Kwatts.isna()].abs_Kwatts)) + ", con un impacto de un " + str(len(_ds_energia[_ds_energia.abs_Kwatts.isna()].abs_Kwatts)/len(_ds_energia.abs_Kwatts)*100) +"%.")
@@ -476,7 +480,8 @@ _extension_zip = '.zip'
 _filename_zip_extension = _filename + _extension_zip
 
 try:
-    _ds_energia.to_csv(os.path.join(_path_dir,_filename_extension))
+  #Exportamos el csv sin las columnas originales de Kwatts 3 fases y Factor de potencia
+    _ds_energia.drop(columns=['Kwatts_3_fases','Factor_de_Poten_A']).to_csv(os.path.join(_path_dir,_filename_extension))
 except Exception as e:
     print(str(e))
     
@@ -523,17 +528,17 @@ _ds_energia[['Vab','Vca','Vbc']].describe()
   **Los 3 campos de corrientes proveen un amperaje según los tipos de potencias: activa, reactiva y aparente. Los datos no son los mismos y no puede tomarse 1 como general porque cada variación tiene que ver son el comportamiento de la corriente de cada fase.**
 """
 
-_ds_energia[['Amper fase T-A', 'Amper fase S-A', 'Amper fase R-A']].describe()
+_ds_energia[['Amper_fase_T_A', 'Amper_fase_S_A', 'Amper_fase_R_A']].describe()
 
 """1.c Valor absoluto de la potencia"""
 
-_ds_energia[['Kwatts 3 fases','abs_Kwatts']].describe()
+_ds_energia[['abs_Kwatts']].describe()
 
 """2.   Si la medición de potencia está invertida(negativa) el factor de potencia debería serlo también. Validar que esto ocurra en todos los casos. ¿Qué hacer en los que no?"""
 
-_ds_energia[(_ds_energia['Factor de Poten-A']<=0) & (_ds_energia['Kwatts 3 fases']>0)].count()
+_ds_energia[(_ds_energia['Factor_de_Poten_A']<=0) & (_ds_energia['Kwatts_3_fases']>0)].count()
 
-_ds_energia[(_ds_energia['Factor de Poten-A']>=0) & (_ds_energia['Kwatts 3 fases']<0)].count()
+_ds_energia[(_ds_energia['Factor_de_Poten_A']>=0) & (_ds_energia['Kwatts_3_fases']<0)].count()
 
 """**Se considera que el factor de potencia es negativo y el consumo en Kw es positivo o viserversa como un corte de energía. Se tomarán sus valores absolutos para realizar cálculos.**
 
